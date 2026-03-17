@@ -1,0 +1,106 @@
+// This is your Prisma schema file, per MillStream ERP architecture.md
+// Passwords are stored as bcrypt hashes (passwordHash) — not plaintext.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")   // Pooled (PgBouncer) — used by Prisma Client at runtime
+  directUrl = env("DIRECT_URL")     // Direct TCP — used by `prisma migrate` only
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+enum MaterialType {
+  WHEAT
+  FLOUR
+  BRAN
+  SEMOLINA
+}
+
+enum Category {
+  RAW_MATERIAL
+  PROCESSED_GOOD
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  WALKIN_SALE
+}
+
+// ─── Models ──────────────────────────────────────────────────────────────────
+
+model User {
+  id            Int              @id @default(autoincrement())
+  role          Role             @default(CUSTOMER)
+  phone         String           @unique
+  passwordHash  String           // bcrypt hash — admin resets via /admin/customers/:id/reset-password
+  createdAt     DateTime         @default(now())
+  profile       CustomerProfile?
+}
+
+model CustomerProfile {
+  id           Int                 @id @default(autoincrement())
+  userId       Int                 @unique
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  millId       String              @unique // Generated: e.g., JOH-1234
+  fullName     String
+  vaults       VaultAccount[]
+  transactions TransactionLedger[]
+}
+
+model VaultAccount {
+  id                Int             @id @default(autoincrement())
+  customerProfileId Int
+  customerProfile   CustomerProfile @relation(fields: [customerProfileId], references: [id], onDelete: Cascade)
+  materialType      MaterialType
+  balanceKg         Float           @default(0.0)
+
+  @@unique([customerProfileId, materialType])
+}
+
+model Inventory {
+  id                 Int          @id @default(autoincrement())
+  itemName           String       @unique
+  category           Category
+  currentStockKg     Float        @default(0.0)
+  reorderThresholdKg Float
+}
+
+model TransactionLedger {
+  id                Int              @id @default(autoincrement())
+  customerProfileId Int?
+  customerProfile   CustomerProfile? @relation(fields: [customerProfileId], references: [id], onDelete: SetNull)
+  type              TransactionType
+  materialInvolved  String
+  weightKg          Float
+  processingFeePaid Float            @default(0.0)
+  timestamp         DateTime         @default(now())
+}
+
+// ─── AI Tables ───────────────────────────────────────────────────────────────
+
+model AI_Forecasts {
+  id               Int      @id @default(autoincrement())
+  targetMonth      DateTime
+  predictedWheatKg Float
+  predictedFlourKg Float
+  predictedRevenue Float
+  generatedAt      DateTime @default(now())
+}
+
+model CommodityPrices {
+  id          Int          @id @default(autoincrement())
+  material    MaterialType
+  pricePerKg  Float
+  recordedAt  DateTime     @default(now())
+  sourceAPI   String
+}
