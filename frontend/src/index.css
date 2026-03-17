@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   MillStream ERP — Global Styles
+   ============================================================ */
+
+@layer base {
+  :root {
+    --color-brand: #d97a14;
+    --color-bg:    #0f0f11;
+    --color-surface: #18181b;
+    --color-border: #27272a;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: var(--color-bg);
+    color: #f4f4f5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--color-bg); }
+  ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #52525b; }
+}
+
+@layer components {
+  /* Card */
+  .card {
+    @apply bg-dark-800 border border-dark-700 rounded-2xl p-6 shadow-card;
+  }
+
+  /* Primary Button */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-xl
+           bg-primary-500 hover:bg-primary-600 text-white font-semibold
+           transition-all duration-200 active:scale-95 shadow-glow;
+  }
+
+  /* Ghost Button */
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-xl
+           border border-dark-600 hover:border-primary-500 text-zinc-300
+           hover:text-white transition-all duration-200;
+  }
+
+  /* Form Input */
+  .input {
+    @apply w-full px-4 py-3 rounded-xl bg-dark-700 border border-dark-600
+           text-white placeholder-zinc-500 focus:outline-none
+           focus:ring-2 focus:ring-primary-500 transition-all duration-200;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+  }
+  .badge-success { @apply badge bg-green-500/15 text-green-400; }
+  .badge-warning { @apply badge bg-amber-500/15 text-amber-400; }
+  .badge-danger  { @apply badge bg-red-500/15  text-red-400; }
+
+  /* Sidebar Link */
+  .nav-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-400
+           hover:bg-dark-700 hover:text-white transition-all duration-150 cursor-pointer;
+  }
+  .nav-link.active {
+    @apply bg-primary-500/15 text-primary-400 font-medium;
+  }
+}
