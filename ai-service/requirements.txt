@@ -1,0 +1,39 @@
+# MillStream ERP — AI Microservice Dependencies
+# Python 3.12 / Windows compatible
+
+# --- Web Framework ---
+fastapi==0.115.8
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+
+# --- Configuration & Validation ---
+pydantic==2.10.6
+pydantic-settings==2.7.1
+python-dotenv==1.0.1
+
+# --- Database ---
+sqlalchemy==2.0.38
+psycopg2-binary==2.9.10
+asyncpg==0.30.0
+
+# --- AI Pillar 1: Demand Forecasting ---
+prophet==1.1.6
+pandas==2.2.3
+numpy==1.26.4
+matplotlib==3.9.4
+plotly==6.0.1           # Optional — silences Prophet's "Importing plotly failed" warning
+
+# --- AI Pillar 2: Smart Procurement ---
+requests==2.32.3
+httpx==0.28.1
+
+# --- AI Pillar 3: RAG Text-to-SQL ---
+langchain==0.3.20
+langchain-openai==0.3.8
+langchain-community==0.3.19
+openai==1.66.3
+tiktoken==0.9.0
+
+# --- Utilities ---
+python-dateutil==2.9.0.post0
+pytz==2025.1
